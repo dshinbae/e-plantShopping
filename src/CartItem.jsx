@@ -7,29 +7,46 @@ const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
- 
-  };
-
-  const handleContinueShopping = (e) => {
-   
-  };
-
-
-
-  const handleIncrement = (item) => {
-  };
-
-  const handleDecrement = (item) => {
-   
+    return cart ? cart.reduce((total, item) => total + item.quantity, 0) : 0;
   };
 
   const handleRemove = (item) => {
+    dispatch(removeItem({ name: item.name }));
+ // Notify ProductList to update the button state
   };
 
+  const handleContinueShopping = (e) => {
+    e.preventDefault();
+    console.log("In handleContinueShopping");
+    // Call the onContinueShopping function passed from the parent component
+    onContinueShopping(e);
+  };
+
+  const handleIncrement = (item) => {
+    dispatch(updateQuantity({name: item.name, quantity: item.quantity + 1}));
+  };
+
+  const handleDecrement = (item) => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({name: item.name, quantity: item.quantity - 1}));
+    } else {
+      dispatch(removeItem(item));
+    }
+  };
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    let totalCost = 0;
+    
+    cart.forEach((item) => {
+      const cost = parseInt(item.cost.slice(1));
+      totalCost += cost * item.quantity;
+    });
+    return totalCost;
   };
 
   return (
@@ -56,7 +73,7 @@ const CartItem = ({ onContinueShopping }) => {
       <div style={{ marginTop: '20px', color: 'black' }} className='total_cart_amount'></div>
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={(e) => handleContinueShopping(e)}>Continue Shopping</button>
-        <br />
+        <br/>
         <button className="get-started-button1">Checkout</button>
       </div>
     </div>
@@ -64,5 +81,3 @@ const CartItem = ({ onContinueShopping }) => {
 };
 
 export default CartItem;
-
-
